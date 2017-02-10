@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+        <script src="src/jsdiffer.js" type="text/babel"></script>
+    </head>
+    <body>
+        <script type="text/babel">
+            var diff = new JsDiffer();
+            diff.setX([
+                "class SkinnedMesh extends THREE.Mesh {",
+                "constructor(geometry, materials) {",
+                "super(geometry, materials);",
+                "this.idMatrix = SkinnedMesh.defaultMatrix();",
+                "this.bones = [];",
+                "this.boneMatrices = [];"
+            ]);
+            diff.setY([
+                "class SkinnedMesh extends THREE.Mesh {",
+                "constructor(geometry, materials) {",
+                "super(geometry, materials);",
+                "idMatrix = SkinnedMesh.defaultMatrix();",
+                "this.bones = [];",
+                "this.boneMatrices = [];"
+            ]);
+            document.write(JSON.stringify(diff.lcs()));
+        </script>
+    </body>
+</html>
