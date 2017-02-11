@@ -10,7 +10,6 @@
             var diff = new JsDiffer();
             diff.setX([
                 "class SkinnedMesh extends THREE.Mesh {",
-                "constructor(geometry, materials) {",
                 "super(geometry, materials);",
                 "this.idMatrix = SkinnedMesh.defaultMatrix();",
                 "this.bones = [];",
@@ -24,7 +23,11 @@
                 "this.bones = [];",
                 "this.boneMatrices = [];"
             ]);
-            document.write(JSON.stringify(diff.lcs()));
+            diff.diff();
+            for (var i = 0; i < diff._diff_res.length; i++){
+                document.write(JSON.stringify(diff._diff_res[i][1]) + " " +
+                diff._diff_res[i][0] + " " + diff._diff_res[i][2] + "<br>");
+            }
         </script>
     </body>
 </html>
