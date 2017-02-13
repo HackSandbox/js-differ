@@ -1,6 +1,9 @@
 # JsDiffer
 A JavaScript Diff Utility
 
+## Demo
+Check out the demo <a href="https://ssl.jackzh.com/demo/js-differ/test.html">here</a>.
+
 ## API Reference
 #### JsDiffer.setX(array) -> void
 Set source data

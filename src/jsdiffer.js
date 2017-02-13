@@ -33,7 +33,6 @@ class JsDiffer {
                 }
             }
         }
-        console.log(JSON.stringify(c))
         return c;
     }
 
@@ -85,7 +84,7 @@ class JsDiffer {
             }
             //this._lcs_push_sol(x,y,i,j,sol);
             console.log(sol);
-            return sol;
+            return sol;j
         }
     }
 
@@ -100,5 +99,4 @@ class JsDiffer {
             return null;
         }
     }
-
 }
