@@ -2,32 +2,162 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-        <script src="src/jsdiffer.js" type="text/babel"></script>
+        <script src="src/jsdiffer.compiled.js" type="text/javascript"></script>
+        <!--Things I always use....-->
+        <script src="https://ssl.jackzh.com/file/js/jquery/jquery-2.2.2.min.js"></script>
+        <script src="https://ssl.jackzh.com/file/css/bootstrap/bootstrap-3-3-6/js/bootstrap.min.js"></script>
+        <link href="https://ssl.jackzh.com/file/css/bootstrap/bootstrap-3-3-6/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+        <link href="https://ssl.jackzh.com/file/css/bootstrap/bootstrap-3-3-6/css/bootstrap-theme.min.css" type="text/css" rel="stylesheet" />
     </head>
     <body>
-        <script type="text/babel">
-            var diff = new JsDiffer();
-            diff.setX([
-                "class SkinnedMesh extends THREE.Mesh {",
-                "super(geometry, materials);",
-                "this.idMatrix = SkinnedMesh.defaultMatrix();",
-                "this.bones = [];",
-                "this.boneMatrices = [];"
-            ]);
-            diff.setY([
-                "class SkinnedMesh extends THREE.Mesh {",
-                "constructor(geometry, materials) {",
-                "super(geometry, materials);",
-                "idMatrix = SkinnedMesh.defaultMatrix();",
-                "this.bones = [];",
-                "this.boneMatrices = [];"
-            ]);
-            diff.diff();
-            for (var i = 0; i < diff._diff_res.length; i++){
-                document.write(JSON.stringify(diff._diff_res[i][1]) + " " +
-                diff._diff_res[i][0] + " " + diff._diff_res[i][2] + "<br>");
+        <style type="text/less">
+            textarea {
+                width:100%;
+                height:300px;
+                background-color:#424242;
+                outline:none;
+                color:#EEEEEE;
+                border:none;
             }
-        </script>
+            body {
+                background-color:#212121;
+            }
+            pre {
+                background-color:#212121;
+                color:#E0E0E0;
+                border:none;
+            }
+        </style>
+        <div class="container-fluid">
+            <h1>JsDiffer Demo</h1>
+            <br><br>
+            <div class="row">
+                <div class="col-md-6">
+                    <textarea id="x-textbox">
+_lcs_recursive(x,y,i,j) {
+    var sol = this._lcs_get_sol(x,y,i,j);
+    if (sol !== null){
+        return sol;
+    } else {
+        sol = []
+    }
+    if (i < 0 || j < 0){
+        return sol;
+    } else {
+        if (x[i] === y[j]){
+            sol = this._lcs_recursive(x,y,i-1,j-1);
+            sol = sol.concat([x[i]]);
+        } else {
+            var sol_a = this._lcs_recursive(x,y,i-1,j);
+            var sol_b = this._lcs_recursive(x,y,i,j-1);
+            if (i > 0 && (j == 0 || sol_a.length > sol_b.length)){
+                sol = sol.concat(["- " + x[i]]);
+            } else if (j > 0 && (i == 0 || sol_a.length <= sol_b.length)) {
+                sol = sol.concat(["+ " + y[j]]);
+            }    
+        }
+        //this._lcs_push_sol(x,y,i,j,sol);
+        console.log(sol);
+        return sol;j
+    }
+}
+                    </textarea>
+                </div>
+                <div class="col-md-6">
+                    <textarea id="y-textbox">
+_lcs_recursive(x,y,i,j) {
+    var sol = this._lcs_get_sol(x,y,i,j);
+    if (sol !== null){
+        return sol;
+    }
+    if (i < 0 || j < 0){
+        return sol;
+    } else {
+        if (x[i] === y[j]){
+            sol = this._lcs_recursive(x,y,i-1,j-1);
+            sol = sol.concat([x[i]]);
+        } else {
+            var sol_k = this._lcs_recursive(x,y,i-1,j);
+            var sol_b = this._lcs_recursive(x,y,i,j-1);
+            if (i > 0 && (j == 0 || sol_a.length > sol_b.length)){
+                sol = sol.concat(["- " + x[i]]);
+            } else if (j > 0 && (i == 0 || sol_a.length <= sol_b.length)) {
+                sol = sol.concat(["+ " + y[j]]);
+            }    
+        }
+        console.log("this is an addition");
+        //this._lcs_push_sol(x,y,i,j,sol);
+        console.log(sol);
+        return sol;j
+    }
+}
+                    </textarea>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <button class="btn btn-primary" onclick="lcs_length_demo();">JsDiffer._lcs_length()</button>
+                    <button class="btn btn-primary" onclick="lcs_diff_demo();">JsDiffer._lcs_diff()</button>
+                    <button class="btn btn-primary" onclick="diff_demo();">JsDiffer.diff()</button>
+                </div>
+            </div>
+            <br><br>
+            <div class="row">
+                <div class="col-md-12">
+                    <pre id="result-container">result will shown here</pre>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
+<script>
+function str_to_array(str){
+    console.log(str.split("\n"));
+    return str.split("\n");
+}
+function pad(width, string, padding) { 
+  return (width <= string.length) ? string : pad(width, padding + string, padding)
+}
+var diff = new JsDiffer();
+function lcs_length_demo(){
+    diff.setX(str_to_array($("#x-textbox").val()));
+    diff.setY(str_to_array($("#y-textbox").val()));
+    var t0 = performance.now();
+    result = diff._lcs_length(diff._x, diff._y);
+    var t1 = performance.now();
+    display = "_lcs_length took " + (t1 - t0) + " ms. \n";
+    for (var i = 0; i < result.length; i++){
+        for (var k = 0; k < result[i].length; k++){
+            display += pad(5, result[i][k], " ");
+        }
+        display += "\n";
+    }
+    $("#result-container").text(display);
+}
+
+function lcs_diff_demo(){
+    diff.setX(str_to_array($("#x-textbox").val()));
+    diff.setY(str_to_array($("#y-textbox").val()));
+    var t0 = performance.now();
+    result = diff._lcs_diff(diff._lcs_length(diff._x, diff._y), diff._x, diff._y, diff._x.length - 1, diff._y.length - 1);
+    var t1 = performance.now();
+    display = "_lcs_diff took " + (t1 - t0) + " ms. \n";
+    display += JSON.stringify(diff._diff_res, null, 2);
+    $("#result-container").text(display);
+}
+
+function diff_demo(){
+    diff.setX(str_to_array($("#x-textbox").val()));
+    diff.setY(str_to_array($("#y-textbox").val()));
+    var t0 = performance.now();
+    result = diff.diff();
+    var t1 = performance.now();
+    display = "_lcs_diff took " + (t1 - t0) + " ms. \n";
+    for (var i = 0; i < diff._diff_res.length; i++){
+       display += JSON.stringify(diff._diff_res[i][1]) + " " + diff._diff_res[i][0] + " " + diff._diff_res[i][2] + "\n";
+    }
+    $("#result-container").text(display);
+}
+</script>
+<script src="https://ssl.jackzh.com/file/js/less-js/less.min.js"></script>
